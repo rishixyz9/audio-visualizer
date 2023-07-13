@@ -5,7 +5,7 @@ from recorder import Recorder
 from gui import window
 import PySimpleGUI as sg
 
-aud_in = Recorder()
+aud_in = Recorder('output.wav')
 
 while True:
     event, values = window.read(timeout=1)
@@ -16,7 +16,7 @@ while True:
     if event == 'Listen':
         window.FindElement('Stop').Update(disabled=False)
         window.FindElement('Listen').Update(disabled=True)
-        aud_in.listen()
+        aud_in.play()
     if event == 'Stop':
         aud_in.stop()
         window.FindElement('Stop').Update(disabled=True)

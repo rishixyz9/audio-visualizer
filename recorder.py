@@ -1,44 +1,39 @@
 import pyaudio
 import soundfile as sf
 import numpy as np
+import wave
 import time
 
 class Recorder:
 
-    def __init__(self):
-        self.SAMPLE_RATE = 44100 
+    def __init__(self, file):
+        self.wf = wave.open(file, "rb")
+        self.samplerate = 44100
         self.pyaudio = pyaudio.PyAudio()
-        self.stream = None
+        self.chunk = 1024
+        self.stream =  self.pyaudio.open(
+            format = pyaudio.get_format_from_width(self.wf.getsampwidth()),
+            channels = self.wf.getnchannels(),
+            rate = self.wf.getframerate(),
+            output = True)
         self.frames = np.array([], dtype=np.int16)
-
-    def callback(self, in_data, frame_count, time_info, status):
-        buffer = np.frombuffer(in_data, dtype=np.int16)
-        self.frames = np.concatenate((self.frames, buffer*10))
-        return (in_data, pyaudio.paContinue)
-    
-    def listen(self):
-        self.stream =  self.pyaudio.open(format=pyaudio.paInt16,
-                channels=1,
-                rate=self.SAMPLE_RATE,
-                input=True,
-                frames_per_buffer=128,
-                stream_callback=self.callback)
-        self.stream.start_stream()
+        
+    def play(self):
+        if(self.stream.is_stopped):
+            self.stream.start_stream()
+        data = self.wf.readframes(self.chunk)
+        self.stream.write(data) 
+        self.frames = np.concatenate((self.frames, np.frombuffer(data, dtype=np.int16)))
 
 
     def stop(self):
         if self.stream:
             self.stream.stop_stream()
-            self.stream.close()
 
     def writeAudio(self, OUTPUT_FILE_NAME):
+        self.stream.close()
         self.pyaudio.terminate()
-        sf.write(file=OUTPUT_FILE_NAME, data=self.frames, samplerate=self.SAMPLE_RATE)
+        sf.write(file=OUTPUT_FILE_NAME, data=self.frames, samplerate=self.samplerate)
 
-
-recorder = Recorder()
-
-recorder.listen()
-time.sleep(5)
-recorder.stop()
-recorder.writeAudio('out.wav')
+if __name__ == '__main__':
+    recorder = Recorder()
