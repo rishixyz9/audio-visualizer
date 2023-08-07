@@ -6,23 +6,24 @@ import time
 
 class Recorder:
 
-    def __init__(self, file):
-        self.wf = wave.open(file, "rb")
+    def __init__(self):
         self.samplerate = 44100
         self.pyaudio = pyaudio.PyAudio()
-        self.chunk = 1024
+        self.chunk = 4096
         self.stream =  self.pyaudio.open(
-            format = pyaudio.get_format_from_width(self.wf.getsampwidth()),
-            channels = self.wf.getnchannels(),
-            rate = self.wf.getframerate(),
-            output = True)
+            format = pyaudio.paInt16,
+            channels = 1,
+            rate = self.samplerate,
+            input = True,
+            output=True,
+            frames_per_buffer=self.chunk)
         self.frames = np.array([], dtype=np.int16)
         
     def play(self):
         if(self.stream.is_stopped):
             self.stream.start_stream()
-        data = self.wf.readframes(self.chunk)
-        self.stream.write(data) 
+        data = self.stream.read(self.chunk)
+        print(data)
         self.frames = np.concatenate((self.frames, np.frombuffer(data, dtype=np.int16)))
 
 
@@ -33,7 +34,7 @@ class Recorder:
     def writeAudio(self, OUTPUT_FILE_NAME):
         self.stream.close()
         self.pyaudio.terminate()
-        sf.write(file=OUTPUT_FILE_NAME, data=self.frames, samplerate=self.samplerate)
+        sf.write(file=OUTPUT_FILE_NAME, data=self.frames*10, samplerate=self.samplerate)
 
 if __name__ == '__main__':
     recorder = Recorder()

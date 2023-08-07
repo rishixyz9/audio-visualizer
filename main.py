@@ -5,50 +5,77 @@ from recorder import Recorder
 from gui import window
 import PySimpleGUI as sg
 
-aud_in = Recorder('output.wav')
+aud_in = Recorder()
+listening = False
 
 while True:
     event, values = window.read(timeout=1)
+    
     if event == sg.WIN_CLOSED or event == 'Exit':
         aud_in.stop()
         aud_in.writeAudio('abc.wav')
         break
-    if event == 'Listen':
+    elif event == 'Listen':
         window.FindElement('Stop').Update(disabled=False)
         window.FindElement('Listen').Update(disabled=True)
-        aud_in.play()
-    if event == 'Stop':
+        listening = True
+    elif event == 'Stop':
         aud_in.stop()
+        listening = False
         window.FindElement('Stop').Update(disabled=True)
         window.FindElement('Listen').Update(disabled=False)
 
-
-# rate, data = scipy.io.wavfile.read('./output.wav')
-
-# file = open('output.txt', 'w')
-
-# print(data)
-
-# file.write(data)
-
-# file.close()
-
-# data = np.fft.fft(data)
-
-# N = len(data)    # Number of samples
-# T = 1/128 # Period
-# y_freq = data
-# domain = len(y_freq) // 2
-# x_freq = np.linspace(0, 128//2, N//2)
-# plt.plot(x_freq, abs(y_freq[:domain]))
-# plt.xlabel("Frequency [Hz]")
-# plt.ylabel("Frequency Amplitude |X(t)|")
-# plt.show()
+    if(listening):
+        aud_in.play()
 
 
-# ff = ffmpy.FFmpeg(
-#     inputs={'water.mp3': None},
-#     outputs={'output.wav': None}
-# )
-# ff.run()
 
+# import pyaudio
+# import wave
+
+# # the file name output you want to record into
+# filename = "recorded.wav"
+# # set the chunk size of 1024 samples
+# chunk = 1024
+# # sample format
+# FORMAT = pyaudio.paInt16
+# # mono, change to 2 if you want stereo
+# channels = 1
+# # 44100 samples per second
+# sample_rate = 44100
+# record_seconds = 5
+# # initialize PyAudio object
+# p = pyaudio.PyAudio()
+# # open stream object as input & output
+# stream = p.open(format=FORMAT,
+#                 channels=channels,
+#                 rate=sample_rate,
+#                 input=True,
+#                 output=True,
+#                 frames_per_buffer=chunk)
+# frames = []
+# print("Recording...")
+# for i in range(int(sample_rate / chunk * record_seconds)):
+#     data = stream.read(chunk)
+#     # if you want to hear your voice while recording
+#     # stream.write(data)
+#     frames.append(data)
+# print("Finished recording.")
+# # stop and close stream
+# stream.stop_stream()
+# stream.close()
+# # terminate pyaudio object
+# p.terminate()
+# # save audio file
+# # open the file in 'write bytes' mode
+# wf = wave.open(filename, "wb")
+# # set the channels
+# wf.setnchannels(channels)
+# # set the sample format
+# wf.setsampwidth(p.get_sample_size(FORMAT))
+# # set the sample rate
+# wf.setframerate(sample_rate)
+# # write the frames as bytes
+# wf.writeframes(b"".join(frames))
+# # close the file
+# wf.close()
