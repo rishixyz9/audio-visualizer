@@ -1,12 +1,36 @@
-import numpy as np
-import scipy
-import matplotlib.pyplot as plt
 from recorder import Recorder
 from gui import window
 import PySimpleGUI as sg
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+matplotlib.use('TkAgg')
 
 aud_in = Recorder()
 listening = False
+
+data = ([0], [0])
+
+fig, ax = plt.subplots()
+ax.plot(data)
+
+def draw_figure(canvas, figure):
+   tkcanvas = FigureCanvasTkAgg(figure, canvas)
+   tkcanvas.draw()
+   tkcanvas.get_tk_widget().pack(side='top', fill='both', expand=1)
+   return tkcanvas
+
+def update_plot(canvas, data):
+    
+    plt.cla()
+    plt.plot(data[0], data[1])
+    plt.xlim(0, 2000)
+    canvas.draw()
+
+tkcanvas = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+
+# a._label("Frequency [Hz]")
+# a._label("Frequency Amplitude |X(t)|")
 
 while True:
     event, values = window.read(timeout=1)
@@ -15,18 +39,21 @@ while True:
         aud_in.stop()
         aud_in.writeAudio('abc.wav')
         break
-    elif event == 'Listen':
+    if event == 'Listen':
         window.FindElement('Stop').Update(disabled=False)
         window.FindElement('Listen').Update(disabled=True)
         listening = True
-    elif event == 'Stop':
+    if event == 'Stop':
         aud_in.stop()
         listening = False
         window.FindElement('Stop').Update(disabled=True)
         window.FindElement('Listen').Update(disabled=False)
 
     if(listening):
-        aud_in.play()
+        data = aud_in.play()
+        update_plot(tkcanvas, data)
+
+    
 
 
 
