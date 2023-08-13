@@ -25,15 +25,17 @@ class Recorder:
         data = self.wf.readframes(self.chunk)
         self.stream.write(data)
         
-        data = np.frombuffer(data, dtype=np.int16)
-        self.frames = np.concatenate((self.frames, data))
-        
+        if(data):
+            data = np.frombuffer(data, dtype=np.int16)
+            self.frames = np.concatenate((self.frames, data))
+            
 
-        fft = np.fft.fft(data) / len(data) #scale data down
-        freqs = np.abs(np.fft.fftfreq(len(data))) #get frequencies from len of buffer
+            fft = np.fft.rfft(data) / len(data) #scale data down
+            freqs = np.abs(np.fft.rfftfreq(len(data))) #get frequencies from len of buffer
 
-        #retrrns the scaled frequencies and magnitude of their corresponding amplitudes
-        return (freqs * self.samplerate, np.abs(fft))
+            #returns the scaled frequencies and magnitude of their corresponding amplitudes
+            return (freqs * self.samplerate, abs(20 * np.log10(np.abs(fft))))
+        return ([0], [0])
 
     def stop(self):
         if self.stream:

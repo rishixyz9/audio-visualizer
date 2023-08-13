@@ -25,13 +25,13 @@ def update_plot(canvas, data):
 
 tkcanvas = draw_figure(window['-CANVAS-'].TKCanvas, fig)
 
-getWav("https://www.youtube.com/watch?v=mq7T8c8YsdU&ab_channel=MemSound")
+getWav("https://www.youtube.com/watch?v=2ltofrl7IHo&ab_channel=WaifuWednesdays")
 
 aud_in = Recorder('audio.wav')
 listening = False
 
 while True:
-    event, values = window.read(timeout=.5)
+    event, values = window.read(timeout=.25)
     
     if event == sg.WIN_CLOSED or event == 'Exit':
         aud_in.stop()
