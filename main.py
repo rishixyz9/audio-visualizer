@@ -20,12 +20,11 @@ def draw_figure(canvas, figure):
 def update_plot(canvas, data):
     plt.cla()
     plt.plot(data[0], data[1])
-    plt.xlim(0, 2000)
     canvas.draw()
 
 tkcanvas = draw_figure(window['-CANVAS-'].TKCanvas, fig)
 
-getWav("https://www.youtube.com/watch?v=2ltofrl7IHo&ab_channel=WaifuWednesdays")
+getWav("https://www.youtube.com/watch?v=UV-mrRhapTU&ab_channel=DonAamen")
 
 aud_in = Recorder('audio.wav')
 listening = False
