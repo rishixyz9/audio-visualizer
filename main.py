@@ -24,7 +24,7 @@ def update_plot(canvas, data):
 
 tkcanvas = draw_figure(window['-CANVAS-'].TKCanvas, fig)
 
-getWav("https://www.youtube.com/watch?v=UV-mrRhapTU&ab_channel=DonAamen")
+getWav("https://www.youtube.com/watch?v=08-wUnNKzBw&ab_channel=venny-Topic")
 
 aud_in = Recorder('audio.wav')
 listening = False

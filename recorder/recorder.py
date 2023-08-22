@@ -19,7 +19,7 @@ class Recorder:
             frames_per_buffer=self.chunk)
         self.frames = np.array([], dtype=np.int16)
         
-    def play(self):
+    async def play(self):
         if(self.stream.is_stopped):
             self.stream.start_stream()
             
@@ -41,11 +41,11 @@ class Recorder:
             
         return ([0], [0])
 
-    def stop(self):
+    async def stop(self):
         if self.stream:
             self.stream.stop_stream()
 
-    def close(self, write=False, OUTPUT_FILE_NAME=None):
+    async def close(self, write=False, OUTPUT_FILE_NAME=None):
         self.stream.close()
         self.pyaudio.terminate()
         if write:
@@ -55,9 +55,9 @@ class Recorder:
         cur = 16
         # buckets = {0:0, 8:0, 16:0, 38:0, 60:0, 155:0, 250:0, 375:0, 500:0, 1250:0, 2000:0, 3000:0, 4000:0, 6000:0, 8000:0}
         buckets = {0:0}
-        while(cur < 6000):
+        while(cur < 20000):
             buckets[int(cur)] = 0
-            cur *= 2**(1/12)
+            cur *= 2**(4/12)
 
         right = len(buckets.keys())-1
 
