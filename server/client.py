@@ -36,6 +36,7 @@ async def gui():
         websocket = await websockets.connect("ws://localhost:8765")
         event, values = window.read(timeout=.25)
         if event == sg.WIN_CLOSED or event == 'Exit':
+            await websocket.send('exit')
             await websocket.close()
             break
         if event == 'Listen':

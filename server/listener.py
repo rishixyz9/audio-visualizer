@@ -8,10 +8,12 @@ sys.path.append('../')
 from scraper.stream import getWav
 from recorder.recorder import Recorder
 
-# getWav("https://www.youtube.com/watch?v=_W88oVKhNW0&ab_channel=Geoxor")
+getWav("https://youtu.be/ZhIsAZO5gl0?si=y8TXyhS8IGiOvJaj")
+
 aud_in = Recorder('audio.wav')
 
 async def echo(websocket):
+    global aud_in
     async for message in websocket:
         if(message == "play"):
             data = await aud_in.play()
@@ -20,8 +22,8 @@ async def echo(websocket):
             await aud_in.stop()
             await websocket.send(message)
         else:
-            print(message)
-            await websocket.send("invalid input")
+            aud_in = Recorder('audio.wav')
+            await websocket.send("closing stream")
 
 async def main():
     async with serve(echo, "localhost", 8765):

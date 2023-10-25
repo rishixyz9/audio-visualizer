@@ -57,7 +57,7 @@ class Recorder:
         buckets = {0:0}
         while(cur < 20000):
             buckets[int(cur)] = 0
-            cur *= 2**(4/12)
+            cur *= 2**(2/12)
 
         right = len(buckets.keys())-1
 
@@ -70,7 +70,7 @@ class Recorder:
             buckets[bucket] += fft[i-1]
             if(buckets[bucket] != 0):
                 buckets[bucket] /= 2
-            buckets[bucket] %= 1000
+            buckets[bucket]
         return buckets
 
 
