@@ -2,6 +2,7 @@ import pyaudio
 import soundfile as sf
 import numpy as np
 import wave
+from struct import pack
 import json
 
 
@@ -18,8 +19,8 @@ class Recorder:
             output=True,
             frames_per_buffer=self.chunk,
         )
-        self.frames = np.array([], dtype=np.float32)
-        self.eq = {"vol": 0.50}
+        self.frames = np.array([], dtype=np.int16)
+        self.eq = {"vol": 100}
 
     # returns a tuple of the frequencies and their corresponding amplitudes
     async def play(self):
@@ -29,14 +30,11 @@ class Recorder:
 
         # read the next chunk of data
         data = self.wf.readframes(self.chunk)
-        data = np.frombuffer(data, dtype=np.float32) * np.float32(self.eq["vol"])
-        self.stream.write(data.tobytes())
-
-        # * self.eq["vol"] / 100
+        self.stream.write(data)
 
         # if there is data, add it to the frames
-        if data.any():
-            # data = np.frombuffer(data, dtype=np.int16)
+        if data:
+            data = np.frombuffer(data, dtype=np.int16)
             self.frames = np.concatenate((self.frames, data))
 
             fft = np.abs(np.fft.rfft(data) / len(data))  # scale data down

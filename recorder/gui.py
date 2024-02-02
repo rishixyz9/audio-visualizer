@@ -14,8 +14,8 @@ layout = [
     ],
     [
         sg.Slider(
-            range=(0, 1),
-            default_value=0.5,
+            range=(0, 100),
+            default_value=50,
             expand_x=True,
             enable_events=True,
             orientation="horizontal",

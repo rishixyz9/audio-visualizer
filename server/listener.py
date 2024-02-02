@@ -23,7 +23,7 @@ async def echo(websocket):
             await aud_in.stop()
             await websocket.send(message)
         elif message == "Vol":
-            aud_in.eq["vol"] = await websocket.recv()
+            aud_in.eq["vol"] = int(float(await websocket.recv()))
             print(aud_in.eq["vol"])
         else:
             aud_in = Recorder("audio.wav")
