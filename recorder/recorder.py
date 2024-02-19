@@ -75,24 +75,32 @@ class Recorder:
     # flattens the frequencies into a visualizable representation
     def flatten(self, freqs, fft):
 
-        # buckets = {
-        #     0: 0,
-        #     16: 0,
-        #     60: 0,
-        #     250: 0,
-        #     500: 0,
-        #     2000: 0,
-        #     4000: 0,
-        #     6000: 0,
-        #     20000: 0,
-        # }
+        buckets = {
+            0: 0,
+            8: 0,  #
+            16: 0,
+            38: 0,  #
+            60: 0,
+            155: 0,  #
+            250: 0,
+            375: 0,  #
+            500: 0,
+            1250: 0,  #
+            2000: 0,
+            3000: 0,  #
+            4000: 0,
+            5000: 0,  #
+            6000: 0,
+            13000: 0,  #
+            20000: 0,
+        }
 
-        cur = 16
-        buckets = {0: 0}
-        # creates buckets up to 20k since that is the highest frequency humans can hear
-        while cur < 20000:
-            buckets[int(cur)] = 0
-            cur *= 2 ** (2 / 12)
+        # cur = 16
+        # buckets = {0: 0}
+        # # creates buckets up to 20k since that is the highest frequency humans can hear
+        # while cur < 20000:
+        #     buckets[int(cur)] = 0
+        #     cur *= 2 ** (2 / 12)
 
         right = len(buckets.keys()) - 1
 

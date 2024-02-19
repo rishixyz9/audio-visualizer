@@ -15,7 +15,6 @@ import matplotlib
 matplotlib.use("TkAgg")
 
 fig, ax = plt.subplots()
-ax.plot(([0], [0]))
 
 
 def draw_figure(canvas, figure):
@@ -26,9 +25,23 @@ def draw_figure(canvas, figure):
 
 
 def update_plot(canvas, data):
-    plt.cla()
-    plt.plot([i + 1 for i in range(len(data[0]))], data[1])
-    canvas.draw()
+    # Clear the current axes
+    ax.clear()
+
+    # Given your data structure, you might need to adjust the width for the bars to properly display them
+    ax.bar(
+        [i + 1 for i in range(len(data[0]))], data[1], width=1, align="center"
+    )  # Plot the bar graph with data
+
+    # It's often helpful to set the x-axis to a logarithmic scale for frequency data
+
+    # Optionally set labels for clarity
+    ax.set_xlabel("Frequency (Hz)")
+    ax.set_ylabel("Amplitude")
+    ax.set_title("Frequency Spectrum")
+
+    # Update the canvas
+    canvas.draw_idle()
 
 
 tkcanvas = draw_figure(window["-CANVAS-"].TKCanvas, fig)
