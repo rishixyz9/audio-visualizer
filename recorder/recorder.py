@@ -20,7 +20,7 @@ class Recorder:
             frames_per_buffer=self.chunk,
         )
         self.frames = np.array([], dtype=np.int16)
-        self.eq = {"vol": 100}
+        self.eq = {"vol": 50}
 
     # returns a tuple of the frequencies and their corresponding amplitudes
     async def play(self):
@@ -30,11 +30,16 @@ class Recorder:
 
         # read the next chunk of data
         data = self.wf.readframes(self.chunk)
-        self.stream.write(data)
-
-        # if there is data, add it to the frames
+        volume_factor = self.eq["vol"] / 100  # Convert volume percentage to a factor
         if data:
             data = np.frombuffer(data, dtype=np.int16)
+
+            adjusted_data = data * volume_factor  # Apply volume adjustment
+            adjusted_data = adjusted_data.astype(
+                np.int16
+            ).tobytes()  # Convert adjusted data back to bytes for playback
+            self.stream.write(adjusted_data)  # write the adjusted data to the stream
+
             self.frames = np.concatenate((self.frames, data))
 
             fft = np.abs(np.fft.rfft(data) / len(data))  # scale data down
@@ -46,7 +51,7 @@ class Recorder:
             buckets = self.flatten(freqs * self.samplerate, fft)
 
             return (
-                list(range(1, len(buckets.keys()) + 1)),
+                list(buckets.keys()),
                 list(buckets.values()),
             )  # flattens the values into a visualizable representation and returns the frequencies and their corresponding amplitudes
 
@@ -69,8 +74,20 @@ class Recorder:
 
     # flattens the frequencies into a visualizable representation
     def flatten(self, freqs, fft):
+
+        # buckets = {
+        #     0: 0,
+        #     16: 0,
+        #     60: 0,
+        #     250: 0,
+        #     500: 0,
+        #     2000: 0,
+        #     4000: 0,
+        #     6000: 0,
+        #     20000: 0,
+        # }
+
         cur = 16
-        # buckets = {0:0, 8:0, 16:0, 38:0, 60:0, 155:0, 250:0, 375:0, 500:0, 1250:0, 2000:0, 3000:0, 4000:0, 6000:0, 8000:0} //old
         buckets = {0: 0}
         # creates buckets up to 20k since that is the highest frequency humans can hear
         while cur < 20000:
@@ -80,7 +97,7 @@ class Recorder:
         right = len(buckets.keys()) - 1
 
         # combs through the frequencies and puts them in the correct bucket
-        for i in range(len(freqs), 0, -1):
+        for i in range(len(freqs) - 1, 0, -1):
             bucket = list(buckets.keys())[right]
             # iterates until the a bucket is found that is less than the current frequency
             while freqs[i - 1] < bucket:
@@ -88,11 +105,22 @@ class Recorder:
                 bucket = list(buckets.keys())[right]
 
             # takes the average of a bucket if there are multiple frequencies in it
-            buckets[bucket] = (
-                fft[i - 1]
-                if buckets[bucket] == 0
-                else (buckets[bucket] + fft[i - 1]) / 2
-            )
+            # buckets[bucket] = (
+            #     fft[i - 1]
+            #     if buckets[bucket] == 0
+            #     else (buckets[bucket] + fft[i - 1]) / 2
+            # )
+
+            amplitude_in_db = 20 * np.log10(max(fft[i], 1))  # Use 1e-10 to avoid log(0)
+
+            # Update bucket with amplitude in dB, averaging if necessary
+            if buckets[bucket] == 0:
+                buckets[bucket] = amplitude_in_db
+            else:
+                buckets[bucket] = (buckets[bucket] + amplitude_in_db) / 2
+
+            # buckets[bucket] = min(buckets[bucket], 3000)  # clamps max amplitude to 5000
+
         return buckets
 
 

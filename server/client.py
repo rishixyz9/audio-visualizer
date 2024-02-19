@@ -27,7 +27,7 @@ def draw_figure(canvas, figure):
 
 def update_plot(canvas, data):
     plt.cla()
-    plt.plot(data[0], data[1])
+    plt.plot([i + 1 for i in range(len(data[0]))], data[1])
     canvas.draw()
 
 
