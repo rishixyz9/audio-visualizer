@@ -39,6 +39,7 @@ def update_plot(canvas, data):
     ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Amplitude")
     ax.set_title("Frequency Spectrum")
+    ax.set_ylim(0, 100)
 
     # Update the canvas
     canvas.draw_idle()
@@ -61,6 +62,8 @@ async def gui():
             window.FindElement("Listen").Update(disabled=True)
             listening = True
             await websocket.send("play")
+            data = json.loads(await websocket.recv())
+            update_plot(tkcanvas, data)
 
         if event == "Stop":
             listening = False

@@ -127,8 +127,6 @@ class Recorder:
             else:
                 buckets[bucket] = (buckets[bucket] + amplitude_in_db) / 2
 
-            # buckets[bucket] = min(buckets[bucket], 3000)  # clamps max amplitude to 5000
-
         return buckets
 
 
