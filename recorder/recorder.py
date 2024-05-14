@@ -126,7 +126,7 @@ class Recorder:
                 buckets[bucket] = amplitude_in_db
             else:
                 buckets[bucket] = (buckets[bucket] + amplitude_in_db) / 2
-
+        print(buckets)
         return buckets
 
 
