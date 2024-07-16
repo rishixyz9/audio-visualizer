@@ -11,8 +11,9 @@ from recorder.recorder import Recorder
 # https://www.youtube.com/watch?v=F4Ec98UJXfA&ab_channel=TOKYOPILL-Topic
 # https://www.youtube.com/watch?v=GHoyX2eBSQM&list=RDMM&start_radio=1&ab_channel=Carthago-Topic
 # https://www.youtube.com/watch?v=M-2YVBCayq4&list=RDMM&index=2&ab_channel=glaiveVEVO
+# https://www.youtube.com/watch?v=Rs_kavGKeHI&ab_channel=draingang
 
-getWav("https://www.youtube.com/watch?v=p7CuxzGWY40&ab_channel=TomFrane")
+getWav("https://www.youtube.com/watch?v=Rs_kavGKeHI&ab_channel=draingang")
 
 aud_in = Recorder("audio.wav")
 

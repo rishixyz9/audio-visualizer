@@ -76,23 +76,23 @@ class Recorder:
     def flatten(self, freqs, fft):
 
         buckets = {
-            0: 0,
-            8: 0,  #
-            16: 0,
-            38: 0,  #
-            60: 0,
-            155: 0,  #
-            250: 0,
-            375: 0,  #
-            500: 0,
-            1250: 0,  #
-            2000: 0,
-            3000: 0,  #
-            4000: 0,
-            5000: 0,  #
-            6000: 0,
-            13000: 0,  #
-            20000: 0,
+            0: [],
+            8: [],  #
+            16: [],
+            38: [],  #
+            60: [],
+            155: [],  #
+            250: [],
+            375: [],  #
+            500: [],
+            1250: [],  #
+            2000: [],
+            3000: [],  #
+            4000: [],
+            5000: [],  #
+            6000: [],
+            13000: [],  #
+            20000: [],
         }
 
         # cur = 16
@@ -121,12 +121,18 @@ class Recorder:
 
             amplitude_in_db = 20 * np.log10(max(fft[i], 1))  # Use 1e-10 to avoid log(0)
 
+            buckets[bucket].append(amplitude_in_db)
+
             # Update bucket with amplitude in dB, averaging if necessary
-            if buckets[bucket] == 0:
-                buckets[bucket] = amplitude_in_db
-            else:
-                buckets[bucket] = (buckets[bucket] + amplitude_in_db) / 2
-        print(buckets)
+            # if buckets[bucket] == 0:
+            #     buckets[bucket] = amplitude_in_db
+            # else:
+            #     buckets[bucket] = (buckets[bucket] + amplitude_in_db) / 2
+        # print(buckets)
+
+        for bucket in buckets:
+            buckets[bucket] = np.mean(buckets[bucket])
+
         return buckets
 
 
