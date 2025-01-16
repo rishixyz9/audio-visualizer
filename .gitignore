@@ -4,3 +4,4 @@ audio.wav
 *.wav
 audio.wav
 node_modules
+chunks/

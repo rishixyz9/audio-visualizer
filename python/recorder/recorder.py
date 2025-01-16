@@ -23,7 +23,7 @@ class Recorder:
         self.eq = {"vol": 50}
 
     # returns a tuple of the frequencies and their corresponding amplitudes
-    async def play(self):
+    def play(self):
         # if the stream is stopped, start it
         if self.stream.is_stopped:
             self.stream.start_stream()
@@ -58,12 +58,12 @@ class Recorder:
         return ([0], [0])
 
     # stops the stream
-    async def stop(self):
+    def stop(self):
         if self.stream:
             self.stream.stop_stream()
 
     # closes the stream
-    async def close(self, write=False, OUTPUT_FILE_NAME=None):
+    def close(self, write=False, OUTPUT_FILE_NAME=None):
         self.stream.close()
         self.pyaudio.terminate()
         # writes the frames out if there is write has been set to true and there is an output file name
