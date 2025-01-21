@@ -45,7 +45,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 while status == "play" and websocket.client_state not in [0, 2]:
                     try:
                         data = aud_in.play()
-                        await websocket.send_text(json.dumps(data))
+                        await websocket.send_json(data)
                     except:
                         print('Stream was terminated, data not sent')
                         return
